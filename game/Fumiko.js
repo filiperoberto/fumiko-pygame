@@ -36,6 +36,31 @@ var Fumiko = function(canvas) {
 
 var FumikoCharacter = function(canvas,ctx) {
 
+	this.observers = new Array();
+	
+	this.on = function(events,callback) {
+		var eventList = events.split(',');
+		for(var i=0;i<eventList.length;i++) {
+			var event = eventList[i];
+			
+			if(!this.observers[event]) {
+				this.observers[event] = new Array();
+			}
+			this.observers[event].push(callback);
+		}
+	};
+	
+	this.trigger = function(evtName) {
+		if(this.observers[evtName] !== undefined) {
+			
+			var args = Array.prototype.slice.call(arguments, 1);
+			
+			this.observers[evtName].forEach(function(callback){
+				callback.apply(_this,args);
+			});
+		}
+	};
+
 	this.ctx = ctx;
 	this.canvas = canvas;
 	var _this = this;
